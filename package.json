@@ -1,0 +1,29 @@
+{
+  "name": "ligle-model",
+  "version": "0.3.0",
+  "description": "model",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.hijack.moe:crackhopper/ligle-model.git"
+  },
+  "keywords": [
+    "model"
+  ],
+  "dependencies": {
+    "async": "^1.2.1",
+    "ligle-util": "~0.3.0",
+    "mongodb": "^2.0.35",
+    "moment": "^2.10.3"
+  },
+  "devDependencies": {
+    "ligle-db": "~0.3.0",
+    "chai": "^3.0.0"
+  },
+  "readme": "README.md",
+  "author": "crackhopper",
+  "license": "ligle"
+}
