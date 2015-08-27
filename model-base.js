@@ -451,7 +451,10 @@ var ModelBase = Class.extend({
         .findOneAndReplace({_id:obj._id},obj,{returnOriginal:false},function(err,writeOpRes){
           //console.log('_save2',err,writeOpRes);
           var cb = self._cbConverter(callback);
-          cb(err,writeOpRes.value);
+          if(!writeOpRes)
+            cb(err,null); // happened occasionally, not know why!
+          else
+            cb(err,writeOpRes.value); 
         });
     }else{
       this.collection.insertOne(obj,function(err,writeOpRes){
