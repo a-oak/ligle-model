@@ -1,6 +1,6 @@
 var index = require('./index.js');
 var ligle={};
-ligle.util=require('ligle-util');
+ligle.util=require('ligle-util')();
 ligle.db = index.db;
 
 var Class = ligle.util.Class;

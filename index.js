@@ -1,5 +1,5 @@
 var ligle={}
-ligle.util=require('ligle-util');
+ligle.util=require('ligle-util')();
 var configure = ligle.util.configure;
 // 数据库的用法：
 // http://mongodb.github.io/node-mongodb-native/2.0/api/Collection.html
