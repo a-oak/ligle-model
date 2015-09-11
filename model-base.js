@@ -332,7 +332,7 @@ var ModelBase = Class.extend({
     }
     logger.info('creating directory:',upDir);
 
-    fs.mkdirSync(upDir);
+    ligle.util.rMkdir(upDir);
   },
   //////// END INITIALIZATION
   _rmOlderFiles:function(field){
