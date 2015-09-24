@@ -1,9 +1,6 @@
 var expect = require('chai').expect;
 var should = require('chai').should();
 
-var async = require('async');
-var fs = require('fs');
-
 var ligle={};
 ligle.util = require('ligle-util');
 ligle.db = require('ligle-db')();

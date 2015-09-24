@@ -276,6 +276,9 @@ var ModelBase = Class.extend({
   upload2HostPath:function(path){
     return cfg.staticDir + path.slice(cfg.upDir.length);
   },
+  getDbCollection:function(){
+    return this.collection;
+  },
   getDbTableName:function(){
     return this.coll.name;
   },
