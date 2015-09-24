@@ -1,6 +1,6 @@
 {
   "name": "ligle-model",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "model",
   "main": "index.js",
   "scripts": {
