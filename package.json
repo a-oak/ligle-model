@@ -8,11 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.hijack.moe:crackhopper/ligle-model.git"
+    "url": "https://github.com/a-oak/ligle-model.git"
   },
   "keywords": [
     "model"
   ],
+  "homepage": "https://github.com/a-oak/ligle-model",
+  "author": "crackhopper",
+  "license": "MIT",
   "dependencies": {
     "async": "^1.2.1",
     "mongodb": "^2.0.35",
@@ -41,8 +44,6 @@
     "semver": "^5.0.3",
     "mocha": "^2.3.2"
   },
-  "author": "crackhopper",
-  "license": "ligle",
   "directories": {
     "test": "test"
   }

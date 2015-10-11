@@ -11,7 +11,7 @@ module.exports = function(grunt) {// jshint ignore:line
   grunt.initConfig({
     pkg:pkg,
     jshint: {
-      files: ['lib/**/*.js','test/**/*.js'],
+      files: ['lib/**/*.js','test/unit/*.js','test/api/*.js'],
       options: {
         jshintrc: '.jshintrc',
         ignores: ['test/coverage/**/*.js'],
