@@ -1,10 +1,12 @@
 var expect = require('chai').expect;
 var should = require('chai').should();
+var requireHelper = require('../require-helper');
+var fs = require('fs');
 
 var ligle={};
-ligle.util = require('ligle-util');
-ligle.db = require('ligle-db')();
-ligle.model = require("./index.js")({db:ligle.db});
+ligle.util = require('ligle-util')({loggerLevel:'INFO'});
+ligle.db = require('ligle-db')({loggerLevel:'INFO'});
+ligle.model = requireHelper('index')({db:ligle.db,loggerLevel:'INFO'});
 
 var collection;// test db setup
 var Model; // test file, get, save, delete
@@ -12,34 +14,31 @@ var Model2;// test field check
 var Model3;// test safe save
 
 var delay = 100;// test must be delayed to avoid conflict
-var n_test = 1; // used for delay
+var nTest = 1; // used for delay
 
 describe('ligle-model',function(){
   before(function(done){
     // must call ligle.base.start before all operation
     ligle.db.start(function(err,db){
-      if(err) console.log(err);
+      if(err) {
+        console.log(err);
+      }
       var coll = 'ligle-model-test';
       collection = db.collection(coll);
       Model = ligle.model.ModelBase.extend({
         __classname:coll,
-        coll:{name:coll,fields:{}}
+        coll:{name:coll,fields:{}},
       });
       Model2 = ligle.model.ModelBase.extend({
         __classname:coll,
-        coll:{name:coll,fields:{'no':'number','name':'string'}}
+        coll:{name:coll,fields:{no:'number',name:'string'}},
       });
       Model3 = ligle.model.ModelBase.extend({
         __classname:coll,
-        coll:{name:coll,fields:{'no':'number','name':'string'},safe:true}
+        coll:{name:coll,fields:{no:'number',name:'string'},safe:true},
       });
       done();
-    });    
-  });
-
-  it('should equal when the same module load many times',function(){
-    var another_model = require('./index.js')();
-    expect(ligle.model).to.deep.equal(another_model);
+    });
   });
 
   var obj,obj2,obj3;
@@ -91,23 +90,25 @@ describe('ligle-model',function(){
           expect(number).equal(0);
           done();
         });
-      })
-    },n_test*delay);
-    n_test = n_test + 1;
+      });
+    },nTest*delay);
+    nTest = nTest + 1;
   });
   it('processFiles(): file uploading test',function(done){
     var reqfiles = {cover:{originalname:'1.txt',path:'haha1.txt'}};
     var reqfiles_ = {cover:{originalname:'1.txt',path:'hahaha1.txt'}};
     var reqfiles2 = {
       covers:[
-            {originalname:'2.txt',path:'haha2.txt'},
-        {originalname:'3.txt',path:'haha3.txt'}
-      ]};
+        {originalname:'2.txt',path:'haha2.txt'},
+        {originalname:'3.txt',path:'haha3.txt'},
+      ],
+    };
     var reqfiles2_ = {
       covers:[
         {originalname:'2.txt',path:'hahaha2.txt'},
-        {originalname:'3.txt',path:'hahaha3.txt'}
-      ]};
+        {originalname:'3.txt',path:'hahaha3.txt'},
+      ],
+    };
 
     var tmpDir = ligle.model.cfg.upDir;//total updir
     var staticDir = ligle.model.cfg.staticDir;//total updir
@@ -115,39 +116,39 @@ describe('ligle-model',function(){
 
     setTimeout(function(){
       /// stage1: make test file and move it to folder
-          var oldfiles_ = [
-            tmpDir+'/'+reqfiles_.cover.path,
-            tmpDir+'/'+reqfiles2_.covers[0].path,
-            tmpDir+'/'+reqfiles2_.covers[1].path
-          ];
+      var oldfiles_ = [
+        tmpDir+'/'+reqfiles_.cover.path,
+        tmpDir+'/'+reqfiles2_.covers[0].path,
+        tmpDir+'/'+reqfiles2_.covers[1].path,
+      ];
       var newfiles_ = [
         upDir+'/'+reqfiles_.cover.path,
         upDir+'/'+reqfiles2_.covers[0].path,
-        upDir+'/'+reqfiles2_.covers[1].path
+        upDir+'/'+reqfiles2_.covers[1].path,
       ];
       oldfiles_.forEach(function(o,i){
         fs.writeFileSync(o);
       });
-      obj.processFiles(reqfiles_);// now is sync operation, may changed in future
-      obj.processFiles(reqfiles2_);// now is sync operation, may changed in future
+      obj.processFiles(reqfiles_);
+      obj.processFiles(reqfiles2_);
 
 
       /// stage2: delete oldfileds make test file and move it to folder
       var oldfiles = [
         tmpDir+'/'+reqfiles.cover.path,
         tmpDir+'/'+reqfiles2.covers[0].path,
-        tmpDir+'/'+reqfiles2.covers[1].path
+        tmpDir+'/'+reqfiles2.covers[1].path,
           ];
       var newfiles = [
         upDir+'/'+reqfiles.cover.path,
         upDir+'/'+reqfiles2.covers[0].path,
-        upDir+'/'+reqfiles2.covers[1].path
+        upDir+'/'+reqfiles2.covers[1].path,
       ];
-          oldfiles.forEach(function(o,i){
-            fs.writeFileSync(o);
-          });
-      obj.processFiles(reqfiles);// now is sync operation, may changed in future
-      obj.processFiles(reqfiles2);// now is sync operation, may changed in future
+      oldfiles.forEach(function(o,i){
+        fs.writeFileSync(o);
+      });
+      obj.processFiles(reqfiles);
+      obj.processFiles(reqfiles2);
 
       newfiles_.forEach(function(o,i){// first upload files is removed!
         var exist = fs.existsSync(o);
@@ -178,8 +179,8 @@ describe('ligle-model',function(){
         expect(obj.covers[1].origin).to.equal(reqfiles2.covers[1].originalname);
         done();
       });
-    },n_test*delay);
-    n_test = n_test + 1;
+    },nTest*delay);
+    nTest = nTest + 1;
   });
   it('getList() test',function(done){
     setTimeout(function(){
@@ -194,8 +195,8 @@ describe('ligle-model',function(){
           done();
         });
       });
-    },n_test*delay);
-    n_test = n_test + 1;
+    },nTest*delay);
+    nTest = nTest + 1;
   });
   /////////////  half constrained collection definition /////////
   it('with Fields defined, but unsafe:insert->get->update',function(done){
@@ -222,8 +223,8 @@ describe('ligle-model',function(){
           });// end update
         });// end get
       });//end insert
-    },n_test*delay);
-    n_test = n_test + 1;
+    },nTest*delay);
+    nTest = nTest + 1;
   });
   it('with Fields defined, but unsafe: process file',function(done){
     var reqfiles = {cover:{originalname:'1.txt',path:'haha1.txt'}};
@@ -235,22 +236,22 @@ describe('ligle-model',function(){
     setTimeout(function(){
       // make test file!!
       var oldfiles = [
-        tmpDir+'/'+reqfiles.cover.path
+        tmpDir+'/'+reqfiles.cover.path,
       ];
       var newfiles = [
-        upDir+'/'+reqfiles.cover.path
-          ];
+        upDir+'/'+reqfiles.cover.path,
+      ];
       var exist = [false];
       oldfiles.forEach(function(o,i){
-            fs.writeFileSync(o);
+        fs.writeFileSync(o);
       });
 
-      obj2.processFiles(reqfiles);// now is sync operation, may changed in future
+      obj2.processFiles(reqfiles);
       newfiles.forEach(function(o,i){
         exist[i]=fs.existsSync(o);
         fs.unlinkSync(o);
         expect(exist[i]).equal(true);
-          });
+      });
 
       // test if the file field is saved!!
       delete obj2._id;
@@ -264,8 +265,8 @@ describe('ligle-model',function(){
         done();
       });
 
-    },n_test*delay);
-    n_test = n_test + 1;
+    },nTest*delay);
+    nTest = nTest + 1;
   });
   /////////////  safe collection definition /////////
   it('with Fields defined, safe mode:insert->get',function(done){
@@ -289,8 +290,8 @@ describe('ligle-model',function(){
 
         });//end insert
       });//end insert
-    },n_test*delay);
-    n_test = n_test + 1;
+    },nTest*delay);
+    nTest = nTest + 1;
 
     after(function(){
       fs.rmdirSync(obj._getUpDir());
